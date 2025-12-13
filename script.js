@@ -154,6 +154,7 @@ function startVote() {
 
     document.getElementById("vote-overlay").style.visibility = "visible"
 
+
     const shoes = [...document.querySelectorAll(".shoe")];
     shoes.forEach(shoe => shoe.style.opacity = "0");
 

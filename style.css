@@ -31,7 +31,7 @@ video {
     object-fit: contain;
     background: black;
     display: none;
-    z-index: 20;
+    z-index: 11;
 
 }
 
@@ -51,7 +51,6 @@ video {
 .shoe-stage {
     position: fixed;
     inset: 0;
-    background: black;
     overflow: hidden;
     display: none;
     z-index: 30;
@@ -85,7 +84,7 @@ video {
 #vote-overlay {
     position: absolute;
     inset: 0;
-    z-index: 40;
+    z-index: 15;
     pointer-events: none;
     visibility: hidden;
 }
