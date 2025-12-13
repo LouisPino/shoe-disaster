@@ -138,7 +138,7 @@ function startMainWithShoeBank(bankNumber) {
         img.getBoundingClientRect();
 
         // Staggered scatter timing (feels alive but controlled)
-        const delay = Math.random() * 300;
+        const delay = Math.random() * 3000;
 
         setTimeout(() => {
             img.style.left = `${finalX}px`;
@@ -195,19 +195,21 @@ function displayWinner(direction) {
 function returnToMain() {
     if (!votingActive) return;
 
-    // Permanently remove winning shoe
+    // Remove winning shoe permanently
     if (winningShoe) {
         winningShoe.remove();
     }
 
-    // Remove overlay
-    document.getElementById("vote-overlay").style.visibility = "hidden"
+    // Hide overlay
+    document.getElementById("vote-overlay").style.visibility = "hidden";
 
-
-    // Reset remaining shoes
     const shoes = document.querySelectorAll(".shoe");
+
     shoes.forEach(shoe => {
+        shoe.style.position = "absolute";
         shoe.style.opacity = "1";
+        shoe.style.transform = "scale(1)";
+
         shoe.classList.remove(
             "vote-shoe",
             "vote-left",
@@ -217,12 +219,29 @@ function returnToMain() {
         );
     });
 
+    // 🔥 SPECIAL CASE: only one shoe left
+    if (shoes.length === 1) {
+        const finalShoe = shoes[0];
+        finalShoe.style.transition = "all 0.8s cubic-bezier(0.22, 1, 0.36, 1)";
+
+        finalShoe.style.left = "50%";
+        finalShoe.style.top = "50%";
+        finalShoe.style.transform = "translate(-50%, -50%) scale(5)";
+        finalShoe.style.zIndex = "50";
+
+    } else {
+        // Normal behavior: re-scatter remaining shoes
+        scatterShoes(shoes);
+    }
+
     // Reset state
     votingActive = false;
     leftShoe = null;
     rightShoe = null;
     winningShoe = null;
 }
+
+
 
 
 function banishEvilTilly() {
@@ -243,4 +262,19 @@ function clearShoeStage() {
     mainActive = false;
     shoeStage.style.display = "none";
     shoeStage.innerHTML = "";
+}
+
+
+
+function scatterShoes(shoes) {
+    const maxX = window.innerWidth - 100;
+    const maxY = window.innerHeight - 100;
+
+    shoes.forEach(shoe => {
+        const x = Math.random() * maxX;
+        const y = Math.random() * maxY;
+
+        shoe.style.left = `${x}px`;
+        shoe.style.top = `${y}px`;
+    });
 }
