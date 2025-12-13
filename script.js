@@ -152,9 +152,7 @@ function startVote() {
     if (!mainActive || votingActive) return;
     votingActive = true;
 
-    voteOverlay = document.createElement("div");
-    voteOverlay.className = "vote-overlay";
-    document.body.appendChild(voteOverlay);
+    document.getElementById("vote-overlay").style.visibility = "visible"
 
     const shoes = [...document.querySelectorAll(".shoe")];
     shoes.forEach(shoe => shoe.style.opacity = "0");
@@ -202,10 +200,8 @@ function returnToMain() {
     }
 
     // Remove overlay
-    if (voteOverlay) {
-        voteOverlay.remove();
-        voteOverlay = null;
-    }
+    document.getElementById("vote-overlay").style.visibility = "hidden"
+
 
     // Reset remaining shoes
     const shoes = document.querySelectorAll(".shoe");
