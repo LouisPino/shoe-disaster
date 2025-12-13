@@ -42,36 +42,208 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
+
+
+const TOTAL_SLIDES = 5;
+
+let currentSlide = 1;
+let slideshowActive = false;
+
+const slideshowImg = document.getElementById("slideshow");
+const endVideo = document.getElementById("endVideo");
+
+
+
+const TOTAL_SHOES_PER_BANK = 10;
+
+let mainActive = false;
+let currentBank = null;
+
+const shoeStage = document.getElementById("shoeStage");
+
+
+
+let votingActive = false;
+let leftShoe = null;
+let rightShoe = null;
+let winningShoe = null;
+
+let voteOverlay = null;
+
+
 // --- Placeholder functions ---
 
 function startIntroSlideshow() {
-    console.log("Starting intro slideshow from beginning...");
+    clearShoeStage()
+    currentSlide = 1;
+    slideshowActive = true;
+
+    endVideo.pause();
+    endVideo.style.display = "none";
+
+    slideshowImg.src = `intro-slides/${currentSlide}.png`;
+    slideshowImg.style.display = "block";
 }
 
 function nextSlide() {
-    console.log("Moving to next slide...");
-}
+    if (!slideshowActive) return;
 
+    currentSlide++;
+
+    if (currentSlide > TOTAL_SLIDES) {
+        // End slideshow
+        slideshowActive = false;
+        slideshowImg.style.display = "none";
+        return;
+    }
+
+    slideshowImg.src = `intro-slides/${currentSlide}.png`;
+}
 function startMainWithShoeBank(bankNumber) {
-    console.log(`Starting main with shoe bank ${bankNumber}...`);
+    mainActive = true;
+    currentBank = bankNumber;
+
+    // Hide other modes
+    slideshowActive = false;
+    slideshowImg.style.display = "none";
+    endVideo.pause();
+    endVideo.style.display = "none";
+
+    // Reset stage
+    shoeStage.innerHTML = "";
+    shoeStage.style.display = "block";
+
+    const centerX = window.innerWidth / 2 - 50;
+    const centerY = window.innerHeight / 2 - 50;
+
+    const maxX = window.innerWidth - 100;
+    const maxY = window.innerHeight - 100;
+
+    for (let i = 1; i <= 10; i++) {
+        const img = document.createElement("img");
+        img.src = `shoe-${bankNumber}/${i}.png`;
+        img.className = "shoe";
+
+        // Start at center
+        img.style.left = `${centerX}px`;
+        img.style.top = `${centerY}px`;
+
+        // Calculate final random position
+        const finalX = Math.random() * maxX;
+        const finalY = Math.random() * maxY;
+
+        shoeStage.appendChild(img);
+
+        // Force layout so transition triggers correctly
+        img.getBoundingClientRect();
+
+        // Staggered scatter timing (feels alive but controlled)
+        const delay = Math.random() * 300;
+
+        setTimeout(() => {
+            img.style.left = `${finalX}px`;
+            img.style.top = `${finalY}px`;
+            img.classList.add("scatter-in");
+        }, delay);
+    }
 }
 
 function startVote() {
-    console.log("Starting vote...");
+    if (!mainActive || votingActive) return;
+    votingActive = true;
+
+    voteOverlay = document.createElement("div");
+    voteOverlay.className = "vote-overlay";
+    document.body.appendChild(voteOverlay);
+
+    const shoes = [...document.querySelectorAll(".shoe")];
+    shoes.forEach(shoe => shoe.style.opacity = "0");
+
+    const shuffled = shoes.sort(() => Math.random() - 0.5);
+    leftShoe = shuffled[0];
+    rightShoe = shuffled[1];
+
+    // RESET positioning
+    [leftShoe, rightShoe].forEach(shoe => {
+        shoe.style.left = "";
+        shoe.style.top = "";
+        shoe.style.transform = "translateY(-50%)";
+        shoe.style.opacity = "1";
+        shoe.style.position = "fixed";
+    });
+
+    leftShoe.classList.add("vote-shoe", "vote-left");
+    rightShoe.classList.add("vote-shoe", "vote-right");
 }
 
+
 function displayWinner(direction) {
-    console.log(`Displaying winner from the ${direction}, removing from room...`);
+    if (!votingActive) return;
+
+    if (direction === "left") {
+        winningShoe = leftShoe;
+        rightShoe.classList.add("vote-loser");
+    } else if (direction === "right") {
+        winningShoe = rightShoe;
+        leftShoe.classList.add("vote-loser");
+    } else {
+        return;
+    }
+
+    winningShoe.classList.add("vote-winner");
 }
 
 function returnToMain() {
-    console.log("Returning to main...");
+    if (!votingActive) return;
+
+    // Permanently remove winning shoe
+    if (winningShoe) {
+        winningShoe.remove();
+    }
+
+    // Remove overlay
+    if (voteOverlay) {
+        voteOverlay.remove();
+        voteOverlay = null;
+    }
+
+    // Reset remaining shoes
+    const shoes = document.querySelectorAll(".shoe");
+    shoes.forEach(shoe => {
+        shoe.style.opacity = "1";
+        shoe.classList.remove(
+            "vote-shoe",
+            "vote-left",
+            "vote-right",
+            "vote-winner",
+            "vote-loser"
+        );
+    });
+
+    // Reset state
+    votingActive = false;
+    leftShoe = null;
+    rightShoe = null;
+    winningShoe = null;
 }
+
 
 function banishEvilTilly() {
     console.log("Banish evil Tilly!");
 }
-
 function startEndVideo() {
-    console.log("Starting end video, will cut to game over screen at end...");
+    clearShoeStage()
+    slideshowActive = false;
+    slideshowImg.style.display = "none";
+
+    endVideo.currentTime = 0;
+    endVideo.style.display = "block";
+    endVideo.play();
+}
+
+
+function clearShoeStage() {
+    mainActive = false;
+    shoeStage.style.display = "none";
+    shoeStage.innerHTML = "";
 }
