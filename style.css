@@ -18,7 +18,7 @@ body {
     /* preserves aspect ratio */
     background: black;
     display: none;
-    z-index: 10;
+    z-index: 16;
 
     /* hidden until slideshow starts */
 }
@@ -31,7 +31,7 @@ video {
     object-fit: contain;
     background: black;
     display: none;
-    z-index: 11;
+    z-index: 17;
 
 }
 
@@ -90,6 +90,16 @@ video {
 }
 
 
+
+#shoe-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 15;
+    pointer-events: none;
+    visibility: visible;
+}
+
+
 .vote-shoe {
     position: fixed;
     top: 50%;
@@ -125,4 +135,32 @@ video {
 /* Loser fade */
 .vote-loser {
     opacity: 0 !important;
+}
+
+
+
+.evil-tilly {
+    position: fixed;
+    width: 300px;
+    height: 300px;
+    z-index: 2000;
+    pointer-events: none;
+    transition:
+        transform 0.2s linear,
+        left 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+        top 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.evil-hit {
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg) scale(1.1);
+    }
+
+    to {
+        transform: rotate(360deg) scale(1.1);
+    }
 }

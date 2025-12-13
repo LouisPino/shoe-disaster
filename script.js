@@ -71,6 +71,15 @@ let winningShoe = null;
 let voteOverlay = null;
 
 
+let evilTilly = null;
+let evilTillyActive = false;
+let evilDX = 3;
+let evilDY = 2;
+let evilInterval = null;
+let evilTillyHasSpawned = false;
+let evilHasEnteredScreen = false;
+
+
 // --- Placeholder functions ---
 
 function startIntroSlideshow() {
@@ -153,6 +162,7 @@ function startVote() {
     votingActive = true;
 
     document.getElementById("vote-overlay").style.visibility = "visible"
+    document.getElementById("shoe-overlay").style.visibility = "hidden"
 
 
     const shoes = [...document.querySelectorAll(".shoe")];
@@ -202,6 +212,7 @@ function returnToMain() {
 
     // Hide overlay
     document.getElementById("vote-overlay").style.visibility = "hidden";
+    document.getElementById("shoe-overlay").style.visibility = "visible";
 
     const shoes = document.querySelectorAll(".shoe");
 
@@ -220,6 +231,9 @@ function returnToMain() {
     });
 
     // 🔥 SPECIAL CASE: only one shoe left
+    if (shoes.length === 5) {
+        spawnEvilTilly()
+    }
     if (shoes.length === 1) {
         const finalShoe = shoes[0];
         finalShoe.style.transition = "all 0.8s cubic-bezier(0.22, 1, 0.36, 1)";
@@ -239,14 +253,33 @@ function returnToMain() {
     leftShoe = null;
     rightShoe = null;
     winningShoe = null;
-}
 
+}
 
 
 
 function banishEvilTilly() {
-    console.log("Banish evil Tilly!");
+    if (!evilTillyActive || !evilTilly) return;
+
+    clearInterval(evilInterval);
+
+    evilTilly.src = "evilTillyHit.webp";
+    evilTilly.classList.add("evil-hit");
+
+    // Fly offscreen after spin
+    setTimeout(() => {
+        evilTilly.style.left = `${window.innerWidth + 400}px`;
+        evilTilly.style.top = `-400px`;
+    }, 200);
+
+    // Cleanup
+    setTimeout(() => {
+        evilTilly.remove();
+        evilTilly = null;
+        evilTillyActive = false;
+    }, 1200);
 }
+
 function startEndVideo() {
     clearShoeStage()
     slideshowActive = false;
@@ -277,4 +310,82 @@ function scatterShoes(shoes) {
         shoe.style.left = `${x}px`;
         shoe.style.top = `${y}px`;
     });
+}
+
+function spawnEvilTilly() {
+    evilTillyActive = true;
+    evilHasEnteredScreen = false;
+
+    evilTilly = document.createElement("img");
+    evilTilly.src = "evilTilly.webp";
+    evilTilly.className = "evil-tilly";
+
+    const size = 300;
+
+    const side = Math.floor(Math.random() * 4);
+    let x, y;
+
+    if (side === 0) { // left
+        x = -size;
+        y = Math.random() * (window.innerHeight - size);
+        evilDX = 3 + Math.random() * 3;   // force RIGHT
+        evilDY = (Math.random() * 4) - 2;
+    }
+
+    if (side === 1) { // right
+        x = window.innerWidth + size;
+        y = Math.random() * (window.innerHeight - size);
+        evilDX = -(3 + Math.random() * 3); // force LEFT
+        evilDY = (Math.random() * 4) - 2;
+    }
+
+    if (side === 2) { // top
+        x = Math.random() * (window.innerWidth - size);
+        y = -size;
+        evilDX = (Math.random() * 4) - 2;
+        evilDY = 3 + Math.random() * 3;   // force DOWN
+    }
+
+    if (side === 3) { // bottom
+        x = Math.random() * (window.innerWidth - size);
+        y = window.innerHeight + size;
+        evilDX = (Math.random() * 4) - 2;
+        evilDY = -(3 + Math.random() * 3); // force UP
+    }
+
+    evilTilly.style.left = `${x}px`;
+    evilTilly.style.top = `${y}px`;
+
+    document.body.appendChild(evilTilly);
+
+    evilInterval = setInterval(moveEvilTilly, 16);
+}
+
+
+function moveEvilTilly() {
+    let x = parseFloat(evilTilly.style.left);
+    let y = parseFloat(evilTilly.style.top);
+    const size = 300;
+
+    x += evilDX;
+    y += evilDY;
+
+    // Detect first entry into screen
+    if (
+        x > 0 &&
+        y > 0 &&
+        x + size < window.innerWidth &&
+        y + size < window.innerHeight
+    ) {
+        evilHasEnteredScreen = true;
+    }
+
+    // Only bounce AFTER fully inside screen at least once
+    if (evilHasEnteredScreen) {
+        if (x <= 0 || x + size >= window.innerWidth) evilDX *= -1;
+        if (y <= 0 || y + size >= window.innerHeight) evilDY *= -1;
+    }
+
+    evilTilly.style.left = `${x}px`;
+    evilTilly.style.top = `${y}px`;
 }
