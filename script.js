@@ -112,46 +112,42 @@ function startMainWithShoeBank(bankNumber) {
     mainActive = true;
     currentBank = bankNumber;
 
-    // Hide other modes
     slideshowActive = false;
     slideshowImg.style.display = "none";
     endVideo.pause();
     endVideo.style.display = "none";
 
-    // Reset stage
     shoeStage.innerHTML = "";
     shoeStage.style.display = "block";
 
-    const centerX = window.innerWidth / 2 - 50;
-    const centerY = window.innerHeight / 2 - 50;
-
-    const maxX = window.innerWidth - 100;
-    const maxY = window.innerHeight - 100;
+    const centerX = window.innerWidth / 2 - 150;
+    const maxX = window.innerWidth - 150;
+    const maxY = window.innerHeight - 150;
 
     for (let i = 1; i <= 10; i++) {
         const img = document.createElement("img");
         img.src = `shoe-${bankNumber}/${i}.png`;
         img.className = "shoe";
 
-        // Start at center
+        // Start ABOVE viewport
         img.style.left = `${centerX}px`;
-        img.style.top = `${centerY}px`;
+        img.style.top = `-250px`;
 
-        // Calculate final random position
         const finalX = Math.random() * maxX;
         const finalY = Math.random() * maxY;
 
         shoeStage.appendChild(img);
 
-        // Force layout so transition triggers correctly
+        // Force layout
         img.getBoundingClientRect();
 
-        // Staggered scatter timing (feels alive but controlled)
-        const delay = Math.random() * 3000;
+        const delay = Math.random() * 1200;
 
         setTimeout(() => {
+            // Snap to final position BEFORE animation
             img.style.left = `${finalX}px`;
             img.style.top = `${finalY}px`;
+
             img.classList.add("scatter-in");
         }, delay);
     }
@@ -176,7 +172,7 @@ function startVote() {
     [leftShoe, rightShoe].forEach(shoe => {
         shoe.style.left = "";
         shoe.style.top = "";
-        shoe.style.transform = "translateY(-50%)";
+        // shoe.style.transform = "translateY(-50%)";
         shoe.style.opacity = "1";
         shoe.style.position = "fixed";
     });
