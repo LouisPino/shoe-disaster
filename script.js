@@ -45,6 +45,7 @@ document.addEventListener("keydown", (event) => {
 
 
 const TOTAL_SLIDES = 5;
+const shoeSize = 1000;
 
 let currentSlide = 1;
 let slideshowActive = false;
@@ -68,7 +69,6 @@ let leftShoe = null;
 let rightShoe = null;
 let winningShoe = null;
 
-let voteOverlay = null;
 
 
 let evilTilly = null;
@@ -120,9 +120,9 @@ function startMainWithShoeBank(bankNumber) {
     shoeStage.innerHTML = "";
     shoeStage.style.display = "block";
 
-    const centerX = window.innerWidth / 2 - 150;
-    const maxX = window.innerWidth - 150;
-    const maxY = window.innerHeight - 150;
+    const centerX = window.innerWidth / 2 - shoeSize;
+    const maxX = window.innerWidth - shoeSize;
+    const maxY = window.innerHeight - shoeSize;
 
     for (let i = 1; i <= 10; i++) {
         const img = document.createElement("img");
@@ -156,10 +156,6 @@ function startMainWithShoeBank(bankNumber) {
 function startVote() {
     if (!mainActive || votingActive) return;
     votingActive = true;
-
-    document.getElementById("vote-overlay").style.visibility = "visible"
-    document.getElementById("shoe-overlay").style.visibility = "hidden"
-
 
     const shoes = [...document.querySelectorAll(".shoe")];
     shoes.forEach(shoe => shoe.style.opacity = "0");
@@ -206,9 +202,6 @@ function returnToMain() {
         winningShoe.remove();
     }
 
-    // Hide overlay
-    document.getElementById("vote-overlay").style.visibility = "hidden";
-    document.getElementById("shoe-overlay").style.visibility = "visible";
 
     const shoes = document.querySelectorAll(".shoe");
 
@@ -227,9 +220,10 @@ function returnToMain() {
     });
 
     // 🔥 SPECIAL CASE: only one shoe left
-    if (shoes.length === 5) {
+    if (shoes.length === 6 || shoes.length === 2) {
         spawnEvilTilly()
     }
+
     if (shoes.length === 1) {
         const finalShoe = shoes[0];
         finalShoe.style.transition = "all 0.8s cubic-bezier(0.22, 1, 0.36, 1)";
@@ -249,7 +243,6 @@ function returnToMain() {
     leftShoe = null;
     rightShoe = null;
     winningShoe = null;
-
 }
 
 
@@ -259,7 +252,7 @@ function banishEvilTilly() {
 
     clearInterval(evilInterval);
 
-    evilTilly.src = "evilTillyHit.webp";
+    evilTilly.src = "BootsBase.png";
     evilTilly.classList.add("evil-hit");
 
     // Fly offscreen after spin
@@ -296,8 +289,8 @@ function clearShoeStage() {
 
 
 function scatterShoes(shoes) {
-    const maxX = window.innerWidth - 100;
-    const maxY = window.innerHeight - 100;
+    const maxX = window.innerWidth - shoeSize;
+    const maxY = window.innerHeight - shoeSize;
 
     shoes.forEach(shoe => {
         const x = Math.random() * maxX;
@@ -313,7 +306,7 @@ function spawnEvilTilly() {
     evilHasEnteredScreen = false;
 
     evilTilly = document.createElement("img");
-    evilTilly.src = "evilTilly.webp";
+    evilTilly.src = "BootsBase.png";
     evilTilly.className = "evil-tilly";
 
     const size = 300;
