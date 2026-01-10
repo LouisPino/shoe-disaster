@@ -7,7 +7,7 @@ document.addEventListener("keydown", (event) => {
             break;
         case "arrowdown":
             event.preventDefault()
-            nextSlide();
+            nextIntroStep();
             break;
         case "1":
             startMainWithShoeBank(1);
@@ -37,21 +37,36 @@ document.addEventListener("keydown", (event) => {
             banishEvilTilly();
             break;
         case "e":
-            startEndVideo();
+            endShow();
             break;
     }
 });
 
 
 
-const TOTAL_SLIDES = 5;
 const shoeSize = 1000;
 
-let currentSlide = 1;
+let currentIntroStep = 0;
 let slideshowActive = false;
 
-const slideshowImg = document.getElementById("slideshow");
-const endVideo = document.getElementById("endVideo");
+const titleCard = document.getElementById("title-card");
+const whiteOverlay = document.querySelector(".white-overlay")
+const tillyEnd = document.getElementById("tilly-end")
+
+
+//intro els
+const tilly = document.getElementById("tilly");
+const bata = document.getElementById("bata");
+const bootsEnter = document.getElementById("BootsEnter");
+const bootsSpin = document.getElementById("BootsSpin");
+const bootsStill = document.getElementById("BootsStill");
+const earth = document.getElementById("earth");
+const explosion = document.getElementById("Explosion");
+const floor = document.getElementById("Floor");
+const pile = document.getElementById("pile");
+const scene3 = document.getElementById("scene3");
+const shoe = document.getElementById("shoe");
+
 
 
 
@@ -80,49 +95,105 @@ let evilTillyHasSpawned = false;
 let evilHasEnteredScreen = false;
 
 
-// --- Placeholder functions ---
 
 function startIntroSlideshow() {
+    whiteOverlay.style.opacity = 0
+    tillyEnd.style.display = "none"
     clearShoeStage()
-    currentSlide = 1;
+    currentIntroStep = 0;
     slideshowActive = true;
-
-    endVideo.pause();
-    endVideo.style.display = "none";
-
-    slideshowImg.src = `intro-slides/${currentSlide}.png`;
-    slideshowImg.style.display = "block";
+    titleCard.style.display = "block";
 }
 
-function nextSlide() {
+
+function nextIntroStep() {
     if (!slideshowActive) return;
+    currentIntroStep++;
+    console.log(currentIntroStep)
 
-    currentSlide++;
+    switch (currentIntroStep) {
+        case 1:
+            titleCard.style.display = "none";
+            setTimeout(() => {
+                tilly.style.opacity = 1
+            }, 1000)
+            return
+        case 2:
+            shoe.style.opacity = 1
+            return
+        case 3:
+            tilly.style.opacity = 0
+            shoe.style.opacity = 0
+            return
+        case 4:
+            earth.style.top = 0
+            return
+        case 5:
+            bata.style.opacity = 1
+            return
+        case 6:
+            pile.style.top = 0
+            return
+        case 7:
+            bata.style.opacity = 0
+            pile.style.opacity = 0
+            earth.style.opacity = 0
+            return
+        case 8:
+            scene3.style.opacity = 1
+            floor.style.opacity = 1
+            return
+        case 9:
+            bootsEnter.style.display = "block"
+            setTimeout(() => {
+                bootsEnter.style.display = "none"
+                bootsStill.style.display = "block"
+            }, 300)
+            setTimeout(() => {
+                bootsStill.style.display = "none"
+                bootsSpin.style.display = "block"
+            }, 2000)
+            return
+        case 10:
+            explosion.style.display = "block"
+            return
+        case 11:
 
-    if (currentSlide > TOTAL_SLIDES) {
-        // End slideshow
-        slideshowActive = false;
-        slideshowImg.style.display = "none";
-        return;
+            return
+        case 12:
+            return
     }
 
-    slideshowImg.src = `intro-slides/${currentSlide}.png`;
+
+
 }
+
+
+
+
+
+
 function startMainWithShoeBank(bankNumber) {
     mainActive = true;
     currentBank = bankNumber;
 
     slideshowActive = false;
-    slideshowImg.style.display = "none";
-    endVideo.pause();
-    endVideo.style.display = "none";
+
+    bootsSpin.style.display = "none"
+    explosion.style.display = "none"
+    scene3.style.opacity = 0
+    floor.style.opacity = 0
+
+
+
+
 
     shoeStage.innerHTML = "";
     shoeStage.style.display = "block";
 
-    const centerX = window.innerWidth / 2 - shoeSize;
+    const centerX = window.innerWidth / 2 - shoeSize + 400;
     const maxX = window.innerWidth - shoeSize;
-    const maxY = window.innerHeight - shoeSize;
+    const maxY = window.innerHeight - shoeSize + 200;
 
     for (let i = 1; i <= 10; i++) {
         const img = document.createElement("img");
@@ -131,7 +202,7 @@ function startMainWithShoeBank(bankNumber) {
 
         // Start ABOVE viewport
         img.style.left = `${centerX}px`;
-        img.style.top = `-250px`;
+        img.style.top = `-450px`;
 
         const finalX = Math.random() * maxX;
         const finalY = Math.random() * maxY;
@@ -147,7 +218,6 @@ function startMainWithShoeBank(bankNumber) {
             // Snap to final position BEFORE animation
             img.style.left = `${finalX}px`;
             img.style.top = `${finalY}px`;
-
             img.classList.add("scatter-in");
         }, delay);
     }
@@ -226,12 +296,8 @@ function returnToMain() {
 
     if (shoes.length === 1) {
         const finalShoe = shoes[0];
-        finalShoe.style.transition = "all 0.8s cubic-bezier(0.22, 1, 0.36, 1)";
+        finalShoe.classList.add("vote-winner")
 
-        finalShoe.style.left = "50%";
-        finalShoe.style.top = "50%";
-        finalShoe.style.transform = "translate(-50%, -50%) scale(5)";
-        finalShoe.style.zIndex = "50";
 
     } else {
         // Normal behavior: re-scatter remaining shoes
@@ -269,14 +335,16 @@ function banishEvilTilly() {
     }, 1200);
 }
 
-function startEndVideo() {
+function endShow() {
     clearShoeStage()
     slideshowActive = false;
-    slideshowImg.style.display = "none";
-
-    endVideo.currentTime = 0;
-    endVideo.style.display = "block";
-    endVideo.play();
+    whiteOverlay.style.opacity = 1
+    setTimeout(() => {
+        tillyEnd.style.display = "block"
+        setTimeout(() => {
+            tillyEnd.src = "tillyDance.GIF"
+        }, 3000)
+    }, 5000)
 }
 
 
@@ -289,8 +357,8 @@ function clearShoeStage() {
 
 
 function scatterShoes(shoes) {
-    const maxX = window.innerWidth - shoeSize;
-    const maxY = window.innerHeight - shoeSize;
+    const maxX = window.innerWidth - shoeSize + 200;
+    const maxY = 200;
 
     shoes.forEach(shoe => {
         const x = Math.random() * maxX;

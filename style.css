@@ -16,11 +16,47 @@ body {
     height: 100vh;
     object-fit: contain;
     /* preserves aspect ratio */
-    background: black;
+    /* background: black; */
     display: none;
     z-index: 16;
 
     /* hidden until slideshow starts */
+}
+
+
+.intro-img {
+    position: absolute;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: contain;
+    /* preserves aspect ratio */
+    /* background: black; */
+    z-index: 16;
+}
+
+#Floor {
+    z-index: 15;
+}
+
+.intro-gif {
+    display: none;
+    z-index: 17;
+}
+
+.slide-up {
+    top: 100%;
+    transition: top 1s ease-out, opacity 1s linear;
+}
+
+.slide-down {
+    top: -100%;
+    transition: top 1s ease-out, opacity 1s linear;
+}
+
+.fade-in {
+    opacity: 0;
+    transition: opacity 1s linear;
 }
 
 video {
@@ -56,15 +92,18 @@ video {
     z-index: 30;
 }
 
+
 .shoe {
     position: absolute;
-    width: 1000px;
-    height: 1000px;
+    width: 1400px;
+    height: auto;
     object-fit: contain;
     user-select: none;
     pointer-events: none;
     opacity: 0;
+    clip-path: inset(0 40% 0 0);
 }
+
 
 /* Activated drop-in state */
 .shoe.scatter-in {
@@ -124,7 +163,7 @@ video {
     position: fixed;
     top: 10%;
     transform: translate(-50%, -50%);
-    width: 45vw;
+    width: 70vw;
     height: auto;
     z-index: 101;
     transition:
@@ -144,12 +183,12 @@ video {
 
 /* Winner animation */
 .vote-winner {
-    left: 50vw !important;
+    left: 60vw !important;
     right: auto !important;
     transform: translateX(-50%) scale(1.1) !important;
     z-index: 1002 !important;
     max-width: none;
-    width: 1000px;
+    width: 1500px;
     top: 50px;
     height: auto;
     object-fit: fill;
@@ -165,8 +204,8 @@ video {
 
 .evil-tilly {
     position: fixed;
-    width: 300px;
-    height: 300px;
+    width: 400px;
+    height: 400px;
     z-index: 2000;
     pointer-events: none;
     transition:
@@ -177,6 +216,25 @@ video {
 
 .evil-hit {
     animation: spin .3s linear infinite;
+}
+
+.white-overlay {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background-color: white;
+    opacity: 0;
+    z-index: 1000;
+    transition: opacity 5s linear;
+}
+
+
+#tilly-end {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2001;
+    display: none;
 }
 
 @keyframes spin {
