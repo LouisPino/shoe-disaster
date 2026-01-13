@@ -95,13 +95,12 @@ video {
 
 .shoe {
     position: absolute;
-    width: 1400px;
+    width: 1000px;
     height: auto;
     object-fit: contain;
     user-select: none;
     pointer-events: none;
     opacity: 0;
-    clip-path: inset(0 40% 0 0);
 }
 
 
@@ -163,7 +162,7 @@ video {
     position: fixed;
     top: 10%;
     transform: translate(-50%, -50%);
-    width: 70vw;
+    width: 50vw;
     height: auto;
     z-index: 101;
     transition:
@@ -174,22 +173,22 @@ video {
 
 
 .vote-left {
-    left: 5vw;
+    left: 0;
 }
 
 .vote-right {
-    left: 55vw;
+    left: 45vw;
 }
 
 /* Winner animation */
 .vote-winner {
-    left: 60vw !important;
+    left: 50vw !important;
     right: auto !important;
     transform: translateX(-50%) scale(1.1) !important;
     z-index: 1002 !important;
     max-width: none;
-    width: 1500px;
-    top: 50px;
+    width: 1000px;
+    top: 100px;
     height: auto;
     object-fit: fill;
 }
