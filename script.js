@@ -50,6 +50,7 @@ let currentIntroStep = 0;
 let slideshowActive = false;
 
 const titleCard = document.getElementById("title-card");
+const bgEl = document.getElementById("shoe-overlay");
 const whiteOverlay = document.querySelector(".white-overlay")
 const tillyEnd = document.getElementById("tilly-end")
 
@@ -340,6 +341,9 @@ function endShow() {
     slideshowActive = false;
     whiteOverlay.style.opacity = 1
     setTimeout(() => {
+            whiteOverlay.style.opacity = 0
+
+        bgEl.src = "Snow.png"
         tillyEnd.style.display = "block"
         setTimeout(() => {
             tillyEnd.src = "tillyDance.GIF"
