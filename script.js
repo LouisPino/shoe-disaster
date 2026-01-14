@@ -109,7 +109,6 @@ function startIntroSlideshow() {
 function nextIntroStep() {
     if (!slideshowActive) return;
     currentIntroStep++;
-    console.log(currentIntroStep)
 
     switch (currentIntroStep) {
         case 1:
@@ -138,6 +137,7 @@ function nextIntroStep() {
             bata.style.opacity = 0
             pile.style.opacity = 0
             earth.style.opacity = 0
+    nextIntroStep()
             return
         case 8:
             scene3.style.opacity = 1

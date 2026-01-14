@@ -35,6 +35,10 @@ body {
     z-index: 16;
 }
 
+#bata{
+    z-index: 17;
+}
+
 #Floor {
     z-index: 15;
 }
